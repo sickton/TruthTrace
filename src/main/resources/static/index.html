@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TruthTrace | Siren's Call</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(to bottom right, #0f0f0f, #1a1a1a);
+            color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            width: 700px;
+            background: rgba(20, 20, 20, 0.95);
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 0 30px rgba(0, 255, 200, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            color: #00ffc8;
+            text-shadow: 0 0 8px rgba(0,255,200,0.6);
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 30px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            background: #111;
+            border: 1px solid #333;
+            color: #00ffc8;
+            font-size: 15px;
+            margin-bottom: 15px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #00ffc8;
+            color: black;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            background: #00cc9f;
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 20px;
+            background: #111;
+            border-left: 4px solid #00ffc8;
+            white-space: pre-wrap;
+            min-height: 120px;
+        }
+
+        .risk-high {
+            color: #ff4c4c;
+            text-shadow: 0 0 8px rgba(255,0,0,0.6);
+        }
+
+        .risk-medium {
+            color: #ffb84c;
+            text-shadow: 0 0 8px rgba(255,165,0,0.6);
+        }
+
+        .risk-low {
+            color: #00ff88;
+            text-shadow: 0 0 8px rgba(0,255,136,0.6);
+        }
+
+        .loading {
+            color: #888;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>TRUTHTRACE</h1>
+    <div class="subtitle">Siren's Call — Deception Intelligence Engine</div>
+
+    <input type="text" id="urlInput" placeholder="Enter suspicious URL...">
+    <button onclick="analyze()">INITIATE TRACE</button>
+
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+    async function analyze() {
+
+        const url = document.getElementById("urlInput").value;
+        const resultDiv = document.getElementById("result");
+
+        if (!url) {
+            resultDiv.innerHTML = "<span class='loading'>Awaiting target URL...</span>";
+            return;
+        }
+
+        resultDiv.innerHTML = "<span class='loading'>Tracing digital footprints...</span>";
+
+        try {
+            const response = await fetch("/analyze", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ url: url })
+            });
+
+            const data = await response.json();
+
+            let riskClass = "";
+            if (data.overallRisk === "HIGH") riskClass = "risk-high";
+            if (data.overallRisk === "MEDIUM") riskClass = "risk-medium";
+            if (data.overallRisk === "LOW") riskClass = "risk-low";
+
+            resultDiv.innerHTML =
+                "Infrastructure Risk: " + data.infrastructureRisk + "\n" +
+                "Content Risk: " + data.contentRisk + "\n\n" +
+                "Overall Risk: <span class='" + riskClass + "'>" +
+                data.overallRisk + "</span>\n\n" +
+                data.explanation;
+
+        } catch (error) {
+            resultDiv.innerHTML = "<span class='risk-high'>Trace failed. Connection disrupted.</span>";
+        }
+    }
+</script>
+
+</body>
+</html>
