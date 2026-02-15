@@ -4,6 +4,9 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 public class OpenAIExplainer {
 
@@ -23,7 +26,8 @@ public class OpenAIExplainer {
                             "Overall Risk Level: " + overallRisk + ".\n" +
                             "Detected signals:\n" +
                             issuesSummary + "\n\n" +
-                            "Explain clearly why this risk level was assigned.";
+                            "Explain clearly why this risk level was assigned, and  make it fun and refer to the isuues raised." +
+                            "Try making it sound like you're breaking down a crime scene";
 
             String escapedPrompt = prompt
                     .replace("\\", "\\\\")
@@ -62,44 +66,29 @@ public class OpenAIExplainer {
 
     private static String extractOutput(String json) {
 
-        String textMarker = "\"text\":";
-        int textIndex = json.indexOf(textMarker);
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root = mapper.readTree(json);
 
-        if (textIndex == -1) {
-            return "No explanation returned.";
-        }
+            JsonNode outputArray = root.path("output");
 
-        // Move to first quote after colon
-        int startQuote = json.indexOf("\"", textIndex + textMarker.length());
-        if (startQuote == -1) return "Parsing failed.";
+            if (outputArray.isArray() && !outputArray.isEmpty()) {
 
-        int start = startQuote + 1;
+                JsonNode firstMessage = outputArray.get(0);
+                JsonNode contentArray = firstMessage.path("content");
 
-        StringBuilder result = new StringBuilder();
-        boolean escaped = false;
+                if (contentArray.isArray() && !contentArray.isEmpty()) {
 
-        for (int i = start; i < json.length(); i++) {
-            char c = json.charAt(i);
+                    JsonNode firstContent = contentArray.get(0);
 
-            if (escaped) {
-                result.append(c);
-                escaped = false;
-            } else if (c == '\\') {
-                escaped = true;
-            } else if (c == '"') {
-                break;
-            } else {
-                result.append(c);
+                    return firstContent.path("text").asText();
+                }
             }
+
+            return "No explanation returned.";
+
+        } catch (Exception e) {
+            return "Failed to parse AI response.";
         }
-
-        return result.toString()
-                .replace("\\n", "\n")
-                .replace("\\\"", "\"")
-                .replace("u2019", "'")
-                .replace("nn", "\n\n")
-                .replace("n ", "\n");
-
     }
-
 }

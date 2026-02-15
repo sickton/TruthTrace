@@ -1,147 +1,293 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>TruthTrace | Siren's Call</title>
+    <title>TruthTrace — Digital Forensic Dossier</title>
+
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
-            font-family: 'Courier New', monospace;
-            background: linear-gradient(to bottom right, #0f0f0f, #1a1a1a);
-            color: #e0e0e0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: "Georgia", serif;
+            background: #0c0c0c;
+            color: #ddd;
             height: 100vh;
+            overflow: hidden;
         }
 
+        /* ===== SMOKE LAYER ===== */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1500&q=80") center/cover no-repeat;
+            opacity: 0.05;
+            filter: grayscale(100%) contrast(140%);
+            animation: smokeDrift 60s linear infinite alternate;
+            z-index: 0;
+        }
+
+        @keyframes smokeDrift {
+            from { transform: scale(1) translateY(0px); }
+            to { transform: scale(1.1) translateY(-30px); }
+        }
+
+        /* ===== MAIN CONTAINER ===== */
         .container {
-            width: 700px;
-            background: rgba(20, 20, 20, 0.95);
-            border: 1px solid #333;
-            border-radius: 10px;
-            padding: 40px;
-            box-shadow: 0 0 30px rgba(0, 255, 200, 0.1);
+            position: relative;
+            z-index: 2;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 30px 60px;
         }
 
-        h1 {
+        /* ===== HEADER ===== */
+        .header {
             text-align: center;
-            margin-bottom: 10px;
-            letter-spacing: 2px;
-            color: #00ffc8;
-            text-shadow: 0 0 8px rgba(0,255,200,0.6);
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            letter-spacing: 6px;
+            margin: 0;
+            color: #e5e5e5;
+            text-shadow: 0 0 10px rgba(255,255,255,0.2);
         }
 
         .subtitle {
-            text-align: center;
-            font-size: 14px;
+            font-size: 12px;
+            letter-spacing: 2px;
             color: #888;
-            margin-bottom: 30px;
+        }
+
+        /* ===== INPUT ===== */
+        .input-row {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0 30px 0;
         }
 
         input {
-            width: 100%;
-            padding: 12px;
+            flex: 1;
+            padding: 14px;
             background: #111;
             border: 1px solid #333;
-            color: #00ffc8;
+            color: #ddd;
             font-size: 15px;
-            margin-bottom: 15px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #777;
         }
 
         button {
-            width: 100%;
-            padding: 12px;
-            background: #00ffc8;
-            color: black;
+            padding: 14px 30px;
+            background: #222;
+            border: 1px solid #444;
+            color: #eee;
             font-weight: bold;
-            border: none;
             cursor: pointer;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
         }
 
         button:hover {
-            background: #00cc9f;
+            background: #333;
         }
 
-        .result {
-            margin-top: 25px;
-            padding: 20px;
-            background: #111;
-            border-left: 4px solid #00ffc8;
-            white-space: pre-wrap;
-            min-height: 120px;
+        /* ===== LAYOUT ===== */
+        .content {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            overflow: hidden;
         }
 
-        .risk-high {
-            color: #ff4c4c;
-            text-shadow: 0 0 8px rgba(255,0,0,0.6);
+        /* ===== LEFT PANEL ===== */
+        .left-panel {
+            background: rgba(20,20,20,0.9);
+            border: 1px solid #2a2a2a;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
-        .risk-medium {
-            color: #ffb84c;
-            text-shadow: 0 0 8px rgba(255,165,0,0.6);
+        .threat-score {
+            font-size: 70px;
+            font-weight: bold;
+            color: #f5f5f5;
         }
 
-        .risk-low {
-            color: #00ff88;
-            text-shadow: 0 0 8px rgba(0,255,136,0.6);
+        .risk-label {
+            font-size: 18px;
+            margin-top: 10px;
         }
 
-        .loading {
+        .checklist {
+            margin-top: 30px;
+            font-size: 14px;
+            line-height: 1.8;
+            color: #aaa;
+        }
+
+        .checklist-item.completed {
+            color: #d4d4d4;
+        }
+
+        /* ===== RIGHT PANEL ===== */
+        .right-panel {
+            background: rgba(18,18,18,0.95);
+            border: 1px solid #2a2a2a;
+            padding: 30px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .pipeline {
+            font-size: 13px;
             color: #888;
-            font-style: italic;
+            height: 140px;
+            overflow-y: auto;
+            margin-bottom: 20px;
         }
+
+        .explanation {
+            flex: 1;
+            overflow-y: auto;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #ddd;
+            padding-right: 10px;
+        }
+
+        .explanation::-webkit-scrollbar,
+        .pipeline::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .explanation::-webkit-scrollbar-thumb,
+        .pipeline::-webkit-scrollbar-thumb {
+            background: #444;
+        }
+
+        strong {
+            color: #fff;
+        }
+
     </style>
 </head>
+
 <body>
 
 <div class="container">
-    <h1>TRUTHTRACE</h1>
-    <div class="subtitle">Siren's Call — Deception Intelligence Engine</div>
 
-    <input type="text" id="urlInput" placeholder="Enter suspicious URL...">
-    <button onclick="analyze()">INITIATE TRACE</button>
+    <div class="header">
+        <h1>TRUTHTRACE</h1>
+        <div class="subtitle">DIGITAL FORENSIC INVESTIGATION DOSSIER</div>
+    </div>
 
-    <div class="result" id="result"></div>
+    <div class="input-row">
+        <input id="urlInput" placeholder="Enter suspect URL...">
+        <button onclick="analyze()">INITIATE INVESTIGATION</button>
+    </div>
+
+    <div class="content">
+
+        <div class="left-panel">
+            <div>
+                <div class="threat-score" id="threatScore">0</div>
+                <div class="risk-label" id="riskLabel">Awaiting analysis</div>
+            </div>
+
+            <div class="checklist">
+                <div class="checklist-item">□ Infrastructure Validation</div>
+                <div class="checklist-item">□ Domain Reputation Scan</div>
+                <div class="checklist-item">□ External Threat Intelligence</div>
+                <div class="checklist-item">□ Content Extraction</div>
+                <div class="checklist-item">□ Linguistic Manipulation Analysis</div>
+                <div class="checklist-item">□ AI Contextual Interpretation</div>
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <div class="pipeline" id="pipeline"></div>
+            <div class="explanation" id="explanation"></div>
+        </div>
+
+    </div>
+
 </div>
 
 <script>
     async function analyze() {
 
         const url = document.getElementById("urlInput").value;
-        const resultDiv = document.getElementById("result");
+        const scoreDiv = document.getElementById("threatScore");
+        const labelDiv = document.getElementById("riskLabel");
+        const pipelineDiv = document.getElementById("pipeline");
+        const explanationDiv = document.getElementById("explanation");
+        const checklistItems = document.querySelectorAll(".checklist-item");
 
-        if (!url) {
-            resultDiv.innerHTML = "<span class='loading'>Awaiting target URL...</span>";
-            return;
-        }
+        if (!url) return;
 
-        resultDiv.innerHTML = "<span class='loading'>Tracing digital footprints...</span>";
+        scoreDiv.innerText = "0";
+        labelDiv.innerText = "Analyzing...";
+        pipelineDiv.innerHTML = "";
+        explanationDiv.innerHTML = "";
 
-        try {
-            const response = await fetch("/analyze", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ url: url })
-            });
+        checklistItems.forEach(item => {
+            item.classList.remove("completed");
+            item.innerHTML = item.innerHTML.replace("✓", "□");
+        });
 
-            const data = await response.json();
+        const response = await fetch("/analyze", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ url })
+        });
 
-            let riskClass = "";
-            if (data.overallRisk === "HIGH") riskClass = "risk-high";
-            if (data.overallRisk === "MEDIUM") riskClass = "risk-medium";
-            if (data.overallRisk === "LOW") riskClass = "risk-low";
+        const data = await response.json();
 
-            resultDiv.innerHTML =
-                "Infrastructure Risk: " + data.infrastructureRisk + "\n" +
-                "Content Risk: " + data.contentRisk + "\n\n" +
-                "Overall Risk: <span class='" + riskClass + "'>" +
-                data.overallRisk + "</span>\n\n" +
-                data.explanation;
+        let current = 0;
+        const interval = setInterval(() => {
+            current += 2;
+            if (current >= data.threatScore) {
+                current = data.threatScore;
+                clearInterval(interval);
+                labelDiv.innerText = "Risk Level: " + data.overallRisk;
+            }
+            scoreDiv.innerText = current;
+        }, 40);
 
-        } catch (error) {
-            resultDiv.innerHTML = "<span class='risk-high'>Trace failed. Connection disrupted.</span>";
-        }
+        data.pipeline.forEach((step, i) => {
+            setTimeout(() => {
+                const div = document.createElement("div");
+                div.innerText = "• " + step;
+                pipelineDiv.appendChild(div);
+
+                if (i < checklistItems.length) {
+                    checklistItems[i].classList.add("completed");
+                    checklistItems[i].innerHTML =
+                        checklistItems[i].innerHTML.replace("□", "✓");
+                }
+
+            }, i * 600);
+        });
+
+        setTimeout(() => {
+            explanationDiv.innerHTML =
+                data.explanation
+                    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+                    .replace(/\n/g, "<br>");
+        }, data.pipeline.length * 600 + 500);
     }
 </script>
 
