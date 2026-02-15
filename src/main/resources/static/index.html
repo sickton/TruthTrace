@@ -10,28 +10,42 @@
 
         body {
             margin: 0;
-            font-family: "Georgia", serif;
-            background: #0c0c0c;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: #0a0a0a;
             color: #ddd;
             height: 100vh;
             overflow: hidden;
         }
 
-        /* ===== SMOKE LAYER ===== */
+        /* ===== URBAN NOIR ATMOSPHERE ===== */
         body::before {
             content: "";
             position: fixed;
             inset: 0;
-            background: url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1500&q=80") center/cover no-repeat;
-            opacity: 0.05;
-            filter: grayscale(100%) contrast(140%);
-            animation: smokeDrift 60s linear infinite alternate;
+            background:
+                    radial-gradient(ellipse at 20% 30%, rgba(139, 69, 19, 0.1) 0%, transparent 50%),
+                    radial-gradient(ellipse at 80% 70%, rgba(70, 130, 180, 0.08) 0%, transparent 50%),
+                    linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, rgba(20, 20, 30, 0.5) 100%);
             z-index: 0;
         }
 
-        @keyframes smokeDrift {
-            from { transform: scale(1) translateY(0px); }
-            to { transform: scale(1.1) translateY(-30px); }
+        /* ===== SUBTLE RAIN EFFECT ===== */
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image:
+                    linear-gradient(transparent 50%, rgba(255, 255, 255, 0.01) 50%);
+            background-size: 2px 4px;
+            animation: rain 0.3s linear infinite;
+            pointer-events: none;
+            z-index: 999;
+            opacity: 0.3;
+        }
+
+        @keyframes rain {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 4px; }
         }
 
         /* ===== MAIN CONTAINER ===== */
@@ -48,20 +62,44 @@
         .header {
             text-align: center;
             margin-bottom: 20px;
+            animation: glitchText 3s infinite;
+        }
+
+        @keyframes glitchText {
+            0%, 90%, 100% { transform: translate(0); }
+            91% { transform: translate(-2px, 1px); }
+            92% { transform: translate(2px, -1px); }
+            93% { transform: translate(0); }
         }
 
         .header h1 {
             font-size: 48px;
-            letter-spacing: 6px;
+            letter-spacing: 8px;
             margin: 0;
-            color: #e5e5e5;
-            text-shadow: 0 0 10px rgba(255,255,255,0.2);
+            color: #d4a574;
+            text-shadow:
+                    0 0 10px rgba(212, 165, 116, 0.4),
+                    0 0 20px rgba(212, 165, 116, 0.2),
+                    2px 2px 4px rgba(0, 0, 0, 0.8);
+            font-weight: 700;
+            font-family: 'Arial', 'Helvetica', sans-serif;
         }
 
         .subtitle {
-            font-size: 12px;
-            letter-spacing: 2px;
-            color: #888;
+            font-size: 11px;
+            letter-spacing: 3px;
+            color: #8b7355;
+            opacity: 0.9;
+            margin-top: 5px;
+            font-weight: 400;
+        }
+
+        .timestamp {
+            font-size: 11px;
+            color: #6b6b6b;
+            opacity: 0.7;
+            margin-top: 8px;
+            font-weight: 300;
         }
 
         /* ===== INPUT ===== */
@@ -74,98 +112,237 @@
         input {
             flex: 1;
             padding: 14px;
-            background: #111;
-            border: 1px solid #333;
-            color: #ddd;
+            background: rgba(20, 20, 25, 0.9);
+            border: 1px solid #4a4a4a;
+            color: #d4a574;
             font-size: 15px;
+            font-family: inherit;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
         }
 
         input:focus {
             outline: none;
-            border-color: #777;
+            border-color: #d4a574;
+            box-shadow: 0 0 10px rgba(212, 165, 116, 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        input::placeholder {
+            color: rgba(107, 107, 107, 0.6);
         }
 
         button {
-            padding: 14px 30px;
-            background: #222;
-            border: 1px solid #444;
-            color: #eee;
-            font-weight: bold;
+            padding: 12px 24px;
+            background: linear-gradient(145deg, #2a2a2f, #1a1a1f);
+            border: 1px solid #d4a574;
+            color: #d4a574;
+            font-weight: 600;
             cursor: pointer;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             transition: all 0.3s ease;
+            font-family: inherit;
+            box-shadow:
+                    0 4px 6px rgba(0, 0, 0, 0.5),
+                    inset 0 1px 0 rgba(212, 165, 116, 0.1);
+            font-size: 14px;
         }
 
         button:hover {
-            background: #333;
+            background: linear-gradient(145deg, #3a3a3f, #2a2a2f);
+            box-shadow:
+                    0 0 15px rgba(212, 165, 116, 0.4),
+                    0 4px 6px rgba(0, 0, 0, 0.5),
+                    inset 0 1px 0 rgba(212, 165, 116, 0.2);
+            transform: translateY(-1px);
+        }
+
+        button:active {
+            transform: translateY(0);
+            box-shadow:
+                    0 0 10px rgba(212, 165, 116, 0.3),
+                    inset 0 2px 4px rgba(0, 0, 0, 0.5);
         }
 
         /* ===== LAYOUT ===== */
         .content {
             flex: 1;
             display: grid;
-            grid-template-columns: 300px 1fr;
+            grid-template-columns: 320px 1fr;
             gap: 30px;
             overflow: hidden;
         }
 
         /* ===== LEFT PANEL ===== */
         .left-panel {
-            background: rgba(20,20,20,0.9);
-            border: 1px solid #2a2a2a;
+            background: linear-gradient(165deg, rgba(25, 25, 30, 0.95), rgba(15, 15, 20, 0.98));
+            border: 1px solid #3a3a3a;
+            box-shadow:
+                    0 8px 32px rgba(0, 0, 0, 0.6),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.03);
             padding: 25px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
 
+        .threat-container {
+            text-align: center;
+            padding: 20px;
+            background: rgba(10, 10, 15, 0.6);
+            border: 1px solid #d4a574;
+            margin-bottom: 20px;
+            position: relative;
+            box-shadow:
+                    0 0 20px rgba(212, 165, 116, 0.1),
+                    inset 0 2px 8px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .threat-container::before {
+            content: "";
+            display: none;
+        }
+
         .threat-score {
-            font-size: 70px;
-            font-weight: bold;
-            color: #f5f5f5;
+            font-size: 56px;
+            font-weight: 700;
+            color: #d4a574;
+            text-shadow:
+                    0 0 15px rgba(212, 165, 116, 0.4),
+                    2px 2px 4px rgba(0, 0, 0, 0.8);
+            line-height: 1;
+            font-family: 'Arial', 'Helvetica', sans-serif;
+        }
+
+        .threat-score.analyzing {
+            animation: analyzing 1s ease-in-out infinite;
+        }
+
+        @keyframes analyzing {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.03); opacity: 0.85; }
         }
 
         .risk-label {
-            font-size: 18px;
-            margin-top: 10px;
+            font-size: 13px;
+            letter-spacing: 2px;
+            color: #8b7355;
+            text-transform: uppercase;
+            text-align: left;
+            line-height: 1.4;
+            font-weight: 500;
+        }
+
+        .risk-label.high {
+            color: #ff6b6b;
+            text-shadow: 0 0 8px rgba(255, 107, 107, 0.4);
+            font-weight: 600;
+        }
+        .risk-label.medium {
+            color: #ffa94d;
+            text-shadow: 0 0 8px rgba(255, 169, 77, 0.4);
+            font-weight: 600;
+        }
+        .risk-label.low {
+            color: #69db7c;
+            text-shadow: 0 0 8px rgba(105, 219, 124, 0.4);
+            font-weight: 600;
         }
 
         .checklist {
-            margin-top: 30px;
+            margin-top: 20px;
             font-size: 14px;
-            line-height: 1.8;
-            color: #aaa;
+            line-height: 2;
+            color: #5a5a5a;
+            font-weight: 400;
+        }
+
+        .checklist-item {
+            padding: 8px;
+            border-left: 2px solid transparent;
+            transition: all 0.3s ease;
         }
 
         .checklist-item.completed {
-            color: #d4d4d4;
+            color: #d4a574;
+            border-left-color: #d4a574;
+            background: rgba(212, 165, 116, 0.05);
+            animation: checkComplete 0.5s ease;
+            font-weight: 500;
+        }
+
+        @keyframes checkComplete {
+            0% { transform: translateX(-10px); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+
+        .checklist-item.active {
+            color: #ffa94d;
+            border-left-color: #ffa94d;
+            background: rgba(255, 169, 77, 0.08);
+            animation: blink 1s ease-in-out infinite;
+            font-weight: 500;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
         }
 
         /* ===== RIGHT PANEL ===== */
         .right-panel {
-            background: rgba(18,18,18,0.95);
-            border: 1px solid #2a2a2a;
+            background: linear-gradient(165deg, rgba(25, 25, 30, 0.95), rgba(15, 15, 20, 0.98));
+            border: 1px solid #3a3a3a;
+            box-shadow:
+                    0 8px 32px rgba(0, 0, 0, 0.6),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.03);
             padding: 30px;
             overflow: hidden;
             display: flex;
             flex-direction: column;
         }
 
+        .panel-header {
+            font-size: 12px;
+            color: #8b7355;
+            letter-spacing: 3px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(212, 165, 116, 0.2);
+            font-weight: 500;
+        }
+
         .pipeline {
             font-size: 13px;
-            color: #888;
+            color: #999;
             height: 140px;
             overflow-y: auto;
             margin-bottom: 20px;
+            line-height: 1.7;
+            font-weight: 400;
+        }
+
+        .pipeline-entry {
+            padding: 4px 0;
+            animation: fadeIn 0.3s ease;
+            color: #aaa;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
         .explanation {
             flex: 1;
             overflow-y: auto;
             font-size: 15px;
-            line-height: 1.6;
-            color: #ddd;
+            line-height: 1.8;
+            color: #c9c9c9;
             padding-right: 10px;
+            font-weight: 400;
         }
 
         .explanation::-webkit-scrollbar,
@@ -173,13 +350,69 @@
             width: 6px;
         }
 
+        .explanation::-webkit-scrollbar-track,
+        .pipeline::-webkit-scrollbar-track {
+            background: rgba(10, 10, 15, 0.5);
+        }
+
         .explanation::-webkit-scrollbar-thumb,
         .pipeline::-webkit-scrollbar-thumb {
-            background: #444;
+            background: #4a4a4a;
+            border-radius: 3px;
+        }
+
+        .explanation::-webkit-scrollbar-thumb:hover,
+        .pipeline::-webkit-scrollbar-thumb:hover {
+            background: #d4a574;
         }
 
         strong {
-            color: #fff;
+            color: #d4a574;
+            text-shadow: 0 0 5px rgba(212, 165, 116, 0.2);
+            font-weight: 600;
+        }
+
+        /* ===== LOADING INDICATOR ===== */
+        .loading-bar {
+            height: 2px;
+            background: linear-gradient(90deg, #d4a574, #8b7355, #d4a574);
+            background-size: 200% 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px rgba(212, 165, 116, 0.4);
+            animation: shimmer 2s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* ===== STATUS BADGE ===== */
+        .status-badge {
+            position: absolute;
+            top: 35px;
+            right: 60px;
+            padding: 8px 15px;
+            background: rgba(25, 25, 30, 0.95);
+            border: 1px solid #4a4a4a;
+            font-size: 11px;
+            letter-spacing: 2px;
+            color: #8b7355;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+            font-weight: 500;
+        }
+
+        .status-badge::before {
+            content: "●";
+            margin-right: 8px;
+            color: #d4a574;
+            animation: statusBlink 1.5s ease-in-out infinite;
+        }
+
+        @keyframes statusBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
         }
 
     </style>
@@ -191,34 +424,44 @@
 
     <div class="header">
         <h1>TRUTHTRACE</h1>
-        <div class="subtitle">DIGITAL FORENSIC INVESTIGATION DOSSIER</div>
+        <div class="subtitle">[ DIGITAL FORENSIC INVESTIGATION SYSTEM ]</div>
+        <div class="timestamp" id="timestamp"></div>
     </div>
 
+    <div class="status-badge" id="statusBadge">SYSTEM READY</div>
+
     <div class="input-row">
-        <input id="urlInput" placeholder="Enter suspect URL...">
-        <button onclick="analyze()">INITIATE INVESTIGATION</button>
+        <input id="urlInput" placeholder="Enter suspect URL for forensic analysis..." autocomplete="off">
+        <button onclick="analyze()">TRACE</button>
     </div>
+
+    <div class="loading-bar" id="loadingBar"></div>
 
     <div class="content">
 
         <div class="left-panel">
             <div>
-                <div class="threat-score" id="threatScore">0</div>
-                <div class="risk-label" id="riskLabel">Awaiting analysis</div>
-            </div>
+                <div class="threat-container">
+                    <div class="threat-score" id="threatScore">0</div>
+                    <div class="risk-label" id="riskLabel">AWAITING ANALYSIS</div>
+                </div>
 
-            <div class="checklist">
-                <div class="checklist-item">□ Infrastructure Validation</div>
-                <div class="checklist-item">□ Domain Reputation Scan</div>
-                <div class="checklist-item">□ External Threat Intelligence</div>
-                <div class="checklist-item">□ Content Extraction</div>
-                <div class="checklist-item">□ Linguistic Manipulation Analysis</div>
-                <div class="checklist-item">□ AI Contextual Interpretation</div>
+                <div class="checklist">
+                    <div class="checklist-item">□ INFRASTRUCTURE VALIDATION</div>
+                    <div class="checklist-item">□ DOMAIN REPUTATION SCAN</div>
+                    <div class="checklist-item">□ EXTERNAL THREAT INTELLIGENCE</div>
+                    <div class="checklist-item">□ CONTENT EXTRACTION</div>
+                    <div class="checklist-item">□ LINGUISTIC MANIPULATION ANALYSIS</div>
+                    <div class="checklist-item">□ AI CONTEXTUAL INTERPRETATION</div>
+                </div>
             </div>
         </div>
 
         <div class="right-panel">
+            <div class="panel-header">[ INVESTIGATION PIPELINE ]</div>
             <div class="pipeline" id="pipeline"></div>
+
+            <div class="panel-header" style="margin-top: 10px;">[ FORENSIC ANALYSIS REPORT ]</div>
             <div class="explanation" id="explanation"></div>
         </div>
 
@@ -227,67 +470,165 @@
 </div>
 
 <script>
+    // Update timestamp
+    function updateTimestamp() {
+        const now = new Date();
+        const timestamp = now.toISOString().replace('T', ' ').substr(0, 19) + ' UTC';
+        document.getElementById('timestamp').innerText = `[ ${timestamp} ]`;
+    }
+    updateTimestamp();
+    setInterval(updateTimestamp, 1000);
+
+    // Allow Enter key to trigger analysis
+    document.getElementById('urlInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') analyze();
+    });
+
     async function analyze() {
 
-        const url = document.getElementById("urlInput").value;
+        const url = document.getElementById("urlInput").value.trim();
         const scoreDiv = document.getElementById("threatScore");
         const labelDiv = document.getElementById("riskLabel");
         const pipelineDiv = document.getElementById("pipeline");
         const explanationDiv = document.getElementById("explanation");
         const checklistItems = document.querySelectorAll(".checklist-item");
+        const loadingBar = document.getElementById("loadingBar");
+        const statusBadge = document.getElementById("statusBadge");
 
-        if (!url) return;
+        if (!url) {
+            alert("Please enter a URL to analyze");
+            return;
+        }
 
+        // Reset UI
         scoreDiv.innerText = "0";
-        labelDiv.innerText = "Analyzing...";
+        scoreDiv.classList.add("analyzing");
+        labelDiv.innerText = "ANALYZING...";
+        labelDiv.className = "risk-label";
         pipelineDiv.innerHTML = "";
         explanationDiv.innerHTML = "";
+        loadingBar.style.width = "0%";
+        statusBadge.innerText = "INVESTIGATION IN PROGRESS";
 
         checklistItems.forEach(item => {
-            item.classList.remove("completed");
-            item.innerHTML = item.innerHTML.replace("✓", "□");
+            item.classList.remove("completed", "active");
+            item.innerHTML = item.innerHTML.replace("✓", "□").replace("⟳", "□");
         });
 
-        const response = await fetch("/analyze", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({ url })
-        });
+        try {
+            // Simulate loading bar
+            let progress = 0;
+            const loadingInterval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress > 90) progress = 90;
+                loadingBar.style.width = progress + "%";
+            }, 200);
 
-        const data = await response.json();
+            const response = await fetch("/analyze", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({ url })
+            });
 
-        let current = 0;
-        const interval = setInterval(() => {
-            current += 2;
-            if (current >= data.threatScore) {
-                current = data.threatScore;
-                clearInterval(interval);
-                labelDiv.innerText = "Risk Level: " + data.overallRisk;
+            clearInterval(loadingInterval);
+            loadingBar.style.width = "100%";
+
+            if (!response.ok) {
+                throw new Error("Analysis failed");
             }
-            scoreDiv.innerText = current;
-        }, 40);
 
-        data.pipeline.forEach((step, i) => {
-            setTimeout(() => {
-                const div = document.createElement("div");
-                div.innerText = "• " + step;
-                pipelineDiv.appendChild(div);
+            const data = await response.json();
 
-                if (i < checklistItems.length) {
-                    checklistItems[i].classList.add("completed");
-                    checklistItems[i].innerHTML =
-                        checklistItems[i].innerHTML.replace("□", "✓");
+            // Animate threat score
+            scoreDiv.classList.remove("analyzing");
+            let current = 0;
+            const scoreInterval = setInterval(() => {
+                current += Math.ceil((data.threatScore - current) / 10);
+                if (current >= data.threatScore) {
+                    current = data.threatScore;
+                    clearInterval(scoreInterval);
+
+                    // Set risk label with color
+                    const riskUpper = data.overallRisk.toUpperCase();
+                    labelDiv.innerText = `RISK LEVEL: ${riskUpper}`;
+
+                    if (data.overallRisk.toLowerCase().includes('high')) {
+                        labelDiv.classList.add('high');
+                    } else if (data.overallRisk.toLowerCase().includes('medium')) {
+                        labelDiv.classList.add('medium');
+                    } else {
+                        labelDiv.classList.add('low');
+                    }
+
+                    statusBadge.innerText = "ANALYSIS COMPLETE";
+                    setTimeout(() => {
+                        statusBadge.innerText = "SYSTEM READY";
+                    }, 3000);
                 }
+                scoreDiv.innerText = current;
+            }, 50);
 
-            }, i * 600);
-        });
+            // Animate pipeline steps
+            data.pipeline.forEach((step, i) => {
+                setTimeout(() => {
+                    const div = document.createElement("div");
+                    div.className = "pipeline-entry";
+                    div.innerText = `[${String(i + 1).padStart(2, '0')}] ${step}`;
+                    pipelineDiv.appendChild(div);
+                    pipelineDiv.scrollTop = pipelineDiv.scrollHeight;
 
-        setTimeout(() => {
-            explanationDiv.innerHTML =
-                data.explanation
-                    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-                    .replace(/\n/g, "<br>");
-        }, data.pipeline.length * 600 + 500);
+                    // Update checklist
+                    if (i < checklistItems.length) {
+                        checklistItems.forEach(item => item.classList.remove("active"));
+
+                        if (i > 0) {
+                            checklistItems[i - 1].classList.remove("active");
+                            checklistItems[i - 1].classList.add("completed");
+                            checklistItems[i - 1].innerHTML =
+                                checklistItems[i - 1].innerHTML.replace("□", "✓").replace("⟳", "✓");
+                        }
+
+                        checklistItems[i].classList.add("active");
+                        checklistItems[i].innerHTML =
+                            checklistItems[i].innerHTML.replace("□", "⟳");
+                    }
+
+                }, i * 600);
+            });
+
+            // Show final checklist completion
+            setTimeout(() => {
+                const lastIndex = Math.min(data.pipeline.length - 1, checklistItems.length - 1);
+                if (lastIndex >= 0) {
+                    checklistItems[lastIndex].classList.remove("active");
+                    checklistItems[lastIndex].classList.add("completed");
+                    checklistItems[lastIndex].innerHTML =
+                        checklistItems[lastIndex].innerHTML.replace("⟳", "✓");
+                }
+            }, data.pipeline.length * 600);
+
+            // Display explanation
+            setTimeout(() => {
+                explanationDiv.innerHTML =
+                    data.explanation
+                        .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+                        .replace(/\n/g, "<br>");
+
+                setTimeout(() => {
+                    loadingBar.style.width = "0%";
+                }, 1000);
+            }, data.pipeline.length * 600 + 500);
+
+        } catch (error) {
+            scoreDiv.classList.remove("analyzing");
+            scoreDiv.innerText = "ERR";
+            labelDiv.innerText = "ANALYSIS FAILED";
+            labelDiv.classList.add("high");
+            explanationDiv.innerHTML = "<strong>ERROR:</strong> Unable to complete analysis. Please verify the URL and try again.";
+            statusBadge.innerText = "SYSTEM ERROR";
+            loadingBar.style.width = "0%";
+            console.error("Analysis error:", error);
+        }
     }
 </script>
 
